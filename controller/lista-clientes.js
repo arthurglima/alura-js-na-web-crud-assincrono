@@ -12,11 +12,25 @@ const criaNovaLinha = (id, nome, email) => {
             </ul>
         </td>`
     linhaNovoCliente.innerHTML = conteudo
+    linhaNovoCliente.dataset.id = id
+
     return linhaNovoCliente
 }
 
 const tabela = document.querySelector('[data-tabela]')
 
+tabela.addEventListener('click', (evento) => {
+    let ehBotaoDeletar = evento.target.className === 'botao-simples botao-simples--excluir'
+    if(ehBotaoDeletar){
+        const linhaCliente = evento.target.closest('[data-id]')
+        let id = linhaCliente.dataset.id
+        clienteService.removeCliente(id)
+        .then( () => {
+            linhaCliente.remove()
+        })
+    }
+    
+})
 
 clienteService.listaClientes()
 .then((data) => {  
