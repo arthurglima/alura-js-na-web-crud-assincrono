@@ -1,25 +1,34 @@
 import {clienteService} from "../service/cliente-service.js"
 
-const url = new URL(window.location)
+( async () => {
+    const url = new URL(window.location)
 
-const id = url.searchParams.get('id')
-
-const inputNome = document.querySelector('[data-nome')
-const inputEmail = document.querySelector('[data-email')
-
-clienteService.detalhaCliente(id)
-.then( dados => {
-    inputNome.value = dados.nome
-    inputEmail.value = dados.email
-})
-
-const form = document.querySelector('[data-form]')
-
-form.addEventListener('submit', (evento) => {
-    evento.preventDefault()
+    const id = url.searchParams.get('id')
     
-    clienteService.atualizaCliente(id, inputNome.value, inputEmail.value)
-    .then( () => {
-        window.location.href = "../telas/edicao_concluida.html"
+    const inputNome = document.querySelector('[data-nome')
+    const inputEmail = document.querySelector('[data-email')
+    try {
+        const dados = await clienteService.detalhaCliente(id)
+        inputNome.value = dados.nome
+        inputEmail.value = dados.email
+    }
+    catch(erro){
+        console.log(erro)
+        window.location.href = '../telas/erro.html'
+    }
+
+    const form = document.querySelector('[data-form]')
+    
+    form.addEventListener('submit', async (evento) => {
+        evento.preventDefault()
+        try{
+            await clienteService.atualizaCliente(id, inputNome.value, inputEmail.value)
+            window.location.href = "../telas/edicao_concluida.html"
+        }
+        catch(erro){
+            console.log(erro)
+            window.location.href = '../telas/erro.html'
+        }
     })
-})
+})()
+
